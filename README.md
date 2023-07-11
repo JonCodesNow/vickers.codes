@@ -1,0 +1,1 @@
+ This is an application of skills I have learned applying terraform to automate a Jekyll theme static website to AWS services.
