@@ -5,17 +5,13 @@ resource "aws_acm_certificate" "ssl_certificate" {
   #validation_method         = "EMAIL"
   validation_method         = "DNS"
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
-data "aws_route53_zone" "vickers.codes" {
-  name         = "vickers.codes"
+data "aws_route53_zone" "vickers_codes" {
+  name         = "vickers_codes"
   private_zone = false
 }
 }
 
-resource "aws_route53_record" "vickers.codes" {
+resource "aws_route53_record" "vickers_codes" {
   for_each = {
     for dvo in aws_acm_certificate.example.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
@@ -32,12 +28,12 @@ allow_overwrite = true
   zone_id         = data.aws_route53_zone.example.zone_id
 }
 
-resource "aws_acm_certificate_validation" "vickers.codes" {
+resource "aws_acm_certificate_validation" "vickers_codes" {
   certificate_arn         = aws_acm_certificate.example.arn
   validation_record_fqdns = [for record in aws_route53_record.example : record.fqdn]
 }
 
-resource "aws_lb_listener" "vickers.codes" {
+resource "aws_lb_listener" "vickers_codes" {
   # ... other configuration ...
 
   certificate_arn = aws_acm_certificate_validation.example.certificate_arn
