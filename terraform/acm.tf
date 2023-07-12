@@ -6,7 +6,7 @@ resource "aws_acm_certificate" "ssl_certificate" {
   validation_method         = "DNS"
 
 data "aws_route53_zone" "vickers_codes" {
-  name         = "vickers_codes"
+  name         = "vickers.codes"
   private_zone = false
 }
 }
