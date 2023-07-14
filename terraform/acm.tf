@@ -3,12 +3,12 @@ resource "aws_acm_certificate" "ssl_certificate" {
   domain_name               = var.domain_name
   subject_alternative_names = ["*.${var.domain_name}"]
   #validation_method         = "EMAIL"
-  validation_method         = "DNS"
+  validation_method = "DNS"
 
-data "aws_route53_zone" "vickers_codes" {
-  name         = "vickers.codes"
-  private_zone = false
-}
+  data "aws_route53_zone" "vickers_codes" {
+    name         = "vickers.codes"
+    private_zone = false
+  }
 }
 
 resource "aws_route53_record" "vickers_codes" {
@@ -20,7 +20,7 @@ resource "aws_route53_record" "vickers_codes" {
     }
   }
 
-allow_overwrite = true
+  allow_overwrite = true
   name            = each.value.name
   records         = [each.value.record]
   ttl             = 60
