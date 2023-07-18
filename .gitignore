@@ -4,4 +4,4 @@ _site/
 .jekyll-cache
 .terraform
 tfplan
-terraform.tfstate.lock.info
+terraform.tfstate
