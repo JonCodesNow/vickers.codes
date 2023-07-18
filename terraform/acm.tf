@@ -6,7 +6,7 @@ resource "aws_acm_certificate" "ssl_certificate" {
   validation_method         = "DNS"
 }
 
-data "aws_route53_zone" "example" {
+data "aws_route53_zone" "vickers_codes" {
   name         = "vickers.codes"
   private_zone = false
 }
@@ -28,7 +28,7 @@ resource "aws_route53_record" "vickers_codes" {
   zone_id         = data.aws_route53_zone.example.zone_id
 }
 
-resource "aws_acm_certificate_validation" "example" {
+resource "aws_acm_certificate_validation" "vickers_codes" {
   certificate_arn         = aws_acm_certificate.ssl_certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.vickers_codes : record.fqdn]
 }
