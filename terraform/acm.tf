@@ -24,7 +24,7 @@ resource "aws_route53_record" "vickers_codes" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.example.zone_id
+  zone_id         = data.aws_route53_zone.vickers_codes.zone_id
 }
 
 resource "aws_acm_certificate_validation" "vickers_codes" {
