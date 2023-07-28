@@ -2,7 +2,7 @@ resource "aws_acm_certificate" "ssl_certificate" {
   domain_name               = var.domain_name
   subject_alternative_names = ["*.${var.domain_name}"]
   #validation_method         = "EMAIL"
-  validation_method         = "DNS"
+  validation_method = "DNS"
 }
 
 data "aws_route53_zone" "vickers_codes" {
