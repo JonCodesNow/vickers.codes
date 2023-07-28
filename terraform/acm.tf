@@ -31,6 +31,3 @@ resource "aws_acm_certificate_validation" "vickers_codes" {
   certificate_arn         = aws_acm_certificate.ssl_certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.vickers_codes : record.fqdn]
 }
-
-
-
