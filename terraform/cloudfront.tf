@@ -50,7 +50,7 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
     }
   }
 
-viewer_certificate {
+  viewer_certificate {
     cloudfront_default_certificate = true
   }
 }
