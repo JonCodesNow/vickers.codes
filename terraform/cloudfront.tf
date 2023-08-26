@@ -1,21 +1,22 @@
+resource "aws_cloudfront_origin_access_control" "vickers_codes" {
+  name                              = "vickers.codes"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "www_s3_distribution" {
   origin {
-    domain_name = "vickers.codes"
-    origin_id   = "S3-www.${var.bucket_name}"
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
-    }
+    domain_name = "vickers.codes.s3.amazonaws.com"
+    origin_id   = "S3-www.${var.bucket_name}" 
+    origin_access_control_id = aws_cloudfront_origin_access_control.vickers_codes.id
   }
 
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 
-  aliases = ["www.${var.domain_name}"]
+  aliases = [var.domain_name]
 
   custom_error_response {
     error_caching_min_ttl = 0
@@ -51,6 +52,7 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn    = aws_acm_certificate.ssl_certificate.arn
+    ssl_support_method     = "sni-only"
   }
 }
