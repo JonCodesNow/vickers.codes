@@ -8,6 +8,6 @@ terraform.tfstate.backup
 terraform.tfstate
 .terraform.tfstate.lock.info
 .terraform.lock.hcl
-bucket.json
+terraform/bucket.json
 
 
