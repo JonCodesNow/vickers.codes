@@ -1,4 +1,4 @@
-name: Apply on Merge
+name: website
 
 on:
   workflow_run:
