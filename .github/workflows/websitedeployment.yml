@@ -1,0 +1,29 @@
+name: website deployment
+
+on:
+  workflow_run:
+    workflows: ["Merge to main"]
+    types:
+      - completed
+
+jobs:
+  apply_on_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+
+      - name: Configure AWS credentials
+        run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Apply Terraform changes
+        run: terraform apply -auto-approve
+      
+      - name: Move _site files to s3 bucket
+        run: aws s3 sync _site s3://vickers.codes    
