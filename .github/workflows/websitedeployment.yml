@@ -16,10 +16,11 @@ jobs:
           terraform_version: 1.5.0
       
       - name: Install AWS CLI
-        uses: aws-actions/aws-cli@v2
-        with:
-          version: 2
-          
+        run : curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        run : unzip awscliv2.zip
+        run : sudo ./aws/install
+
+
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
