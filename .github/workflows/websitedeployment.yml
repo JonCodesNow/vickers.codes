@@ -22,7 +22,7 @@ jobs:
         run : "unzip awscliv2.zip"
 
       - name: Install AWS CLI
-        run : "sudo ./aws/install"
+        run : "./aws/install -i ~/my-aws-cli"
 
 
       - name: Configure AWS credentials
