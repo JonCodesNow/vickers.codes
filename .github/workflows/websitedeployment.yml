@@ -35,9 +35,9 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          cd $GITHUB_WORKSPACE/terraform/main.tf
-          terraform init
-          terraform plan -out=tfplan
+             cd $GITHUB_WORKSPACE/terraform
+             terraform init
+             terraform plan -out=tfplan
 
       - name: Apply Terraform changes
         run: terraform apply -auto-approve
