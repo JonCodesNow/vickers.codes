@@ -14,7 +14,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.5.0
-          working-directory: ./path/to/terraform-config
       
       - name: Curl AWS CLI
         run : curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -31,17 +30,14 @@ jobs:
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      - name: Initialize Terraform
-        run: terraform init
-        working-directory: ./path/to/terraform-config
-
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
-        working-directory: ./path/to/terraform-config
+        run: |
+          cd path/to/terraform-config
+          terraform init
+          terraform plan -out=tfplan
 
       - name: Apply Terraform changes
         run: terraform apply -auto-approve
-        working-directory: ./path/to/terraform-config
       
       - name: Move _site files to s3 bucket
-        run: "aws s3 sync _site s3://vickers.codes"   
+        run: aws s3 sync _site s3://vickers.codes    
