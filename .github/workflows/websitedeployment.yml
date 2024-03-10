@@ -32,7 +32,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          cd /Users/jonvickers/github/JonCodesNow/vickers.codes/terraform/main.tf
+          cd $GITHUB_WORKSPACE/path/to/main.tf
           terraform init
           terraform plan -out=tfplan
 
