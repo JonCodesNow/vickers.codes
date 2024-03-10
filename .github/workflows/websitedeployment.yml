@@ -15,6 +15,9 @@ jobs:
         with:
           terraform_version: 1.5.0
       
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
       - name: Curl AWS CLI
         run : curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
@@ -32,7 +35,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          cd path/to/terraform-config
+          cd $GITHUB_WORKSPACE  # Change to the repository root
           terraform init
           terraform plan -out=tfplan
 
