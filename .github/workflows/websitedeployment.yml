@@ -45,4 +45,4 @@ jobs:
              terraform apply tfplan
       
       - name: Move _site files to s3 bucket
-        run: aws s3 sync _site s3://vickers.codes    
+        run: aws s3 sync online-cv/_site s3://vickers.codes    
