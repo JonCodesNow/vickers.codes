@@ -46,6 +46,7 @@ jobs:
 
       - name: Install ruby/bundle
         run: |
+             cd $GITHUB_WORKSPACE/online-cv
              sudo apt install ruby-full
              sudo gem install bundler
              bundle install
