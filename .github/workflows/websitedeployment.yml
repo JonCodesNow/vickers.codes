@@ -1,10 +1,9 @@
 name: website deployment
 
 on:
-  workflow_run:
-    workflows: ["Merge to main"]
-    types:
-      - completed
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   apply_on_merge:
@@ -14,16 +13,50 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.0
+          terraform_version: 1.5.0
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Curl AWS CLI
+        run : curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+      - name: Unzip AWS CLI
+        run : "unzip awscliv2.zip"
+
+      - name: Install AWS CLI
+        run : "./aws/install -i ~/my-aws-cli"
+
+      - name: Create AWS credentials directory
+        run: mkdir -p ~/.aws
 
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      - name: Initialize Terraform
-        run: terraform init
+      - name: Terraform Plan
+        run: |
+             cd $GITHUB_WORKSPACE/terraform
+             terraform init
+             terraform plan -out=tfplan
 
-      - name: Apply Terraform changes
-        run: terraform apply -auto-approve
+      - name: Apply Terraform changes 
+        run: |
+             cd $GITHUB_WORKSPACE/terraform
+             terraform apply tfplan
+
+      - uses: ruby/setup-ruby@v1.172.0 
+        with:
+          ruby-version: '3.1'
       
+      - name: Install Bundler
+        run: | 
+            cd $GITHUB_WORKSPACE/online-cv
+            bundle install
+
+      - name: Generate Site files
+        run: |
+             cd $GITHUB_WORKSPACE/online-cv
+             bundle exec jekyll build 
+
       - name: Move _site files to s3 bucket
-        run: aws s3 sync _site s3://vickers.codes    
+        run: aws s3 cp online-cv/_site s3://vickers.codes --recursive --region us-east-1
