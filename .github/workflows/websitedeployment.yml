@@ -37,9 +37,9 @@ jobs:
         run: |
              cd $GITHUB_WORKSPACE/terraform
              terraform init
-             terraform plan -out=tfplan
+             terraform plan -var-file=terraform/bucket.json -out=tfplan
 
-      - name: Apply Terraform changes
+      - name: Apply Terraform changes 
         run: terraform apply -auto-approve
       
       - name: Move _site files to s3 bucket
