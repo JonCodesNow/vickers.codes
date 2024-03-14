@@ -59,4 +59,4 @@ jobs:
              bundle exec jekyll build 
 
       - name: Move _site files to s3 bucket
-        run: aws s3 sync online-cv/_site s3://vickers.codes    
+        run: aws s3 cp online-cv/_site s3://vickers.codes --recursive
