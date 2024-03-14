@@ -40,7 +40,7 @@ jobs:
              terraform plan -out=tfplan
 
       - name: Apply Terraform changes 
-        run: terraform apply -auto-approve
+        run: 
       
       - name: Move _site files to s3 bucket
         run: aws s3 sync _site s3://vickers.codes    
