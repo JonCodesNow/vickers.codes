@@ -44,12 +44,14 @@ jobs:
              cd $GITHUB_WORKSPACE/terraform
              terraform apply tfplan
 
-      - name: Install ruby/bundle
-        run: |
-             cd $GITHUB_WORKSPACE/online-cv
-             sudo apt install ruby-full
-             sudo gem install bundler
-             bundle install
+      - uses: ruby/setup-ruby@v1.172.0 
+        with:
+          ruby-version: '3.1'
+      
+      - name: Install Bundler
+        run: | 
+            cd $GITHUB_WORKSPACE/online-cv
+            bundle install
 
       - name: Generate Site files
         run: |
