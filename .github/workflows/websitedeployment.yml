@@ -37,7 +37,7 @@ jobs:
         run: |
              cd $GITHUB_WORKSPACE/terraform
              terraform init
-             terraform plan -var-file=terraform/bucket.json -out=tfplan
+             terraform plan -out=tfplan
 
       - name: Apply Terraform changes 
         run: terraform apply -auto-approve
