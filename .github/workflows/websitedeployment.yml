@@ -44,6 +44,11 @@ jobs:
              cd $GITHUB_WORKSPACE/terraform
              terraform apply tfplan
 
+      - name: Install Ruby
+        run: |
+             sudo apt install ruby-full
+             bundle install
+
       - name: Generate Site files
         run: |
              cd $GITHUB_WORKSPACE/online-cv
