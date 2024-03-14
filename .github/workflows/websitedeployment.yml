@@ -56,7 +56,7 @@ jobs:
       - name: Generate Site files
         run: |
              cd $GITHUB_WORKSPACE/online-cv
-             bundle exec jekyll build --incremental
+             bundle exec jekyll build 
 
       - name: Move _site files to s3 bucket
         run: aws s3 sync online-cv/_site s3://vickers.codes    
