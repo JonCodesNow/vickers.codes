@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "s3_bucket" {
 
 resource "aws_s3_bucket_policy" "s3_policy" {
   bucket = aws_s3_bucket.s3_bucket.id
-  policy  = file("/Users/jonvickers/github/JonCodesNow/vickers.codes/terraform/bucket.json")
+  policy  = file("terraform/bucket.json")
 }
 
 resource "aws_s3_bucket_ownership_controls" "example" {
