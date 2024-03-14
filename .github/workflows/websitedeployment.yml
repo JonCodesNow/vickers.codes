@@ -40,7 +40,9 @@ jobs:
              terraform plan -out=tfplan
 
       - name: Apply Terraform changes 
-        run: terraform apply 
+        run: |
+             cd $GITHUB_WORKSPACE/terraform
+             terraform apply -out=tfplan
       
       - name: Move _site files to s3 bucket
         run: aws s3 sync _site s3://vickers.codes    
