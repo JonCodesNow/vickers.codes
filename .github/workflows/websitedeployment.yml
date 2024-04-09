@@ -37,12 +37,12 @@ jobs:
     needs: terraform_and_aws_setup
     runs-on: ubuntu-latest
     steps:
-      - name: Debug current directory
-        run: pwd
-
+      
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
       - name: Terraform Plan
         run: |
-          ls -R $GITHUB_WORKSPACE  # Debugging: List contents of GitHub workspace
           cd $GITHUB_WORKSPACE/terraform
           terraform init
           terraform plan -out=tfplan
