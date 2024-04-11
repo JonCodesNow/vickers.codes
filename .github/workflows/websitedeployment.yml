@@ -60,6 +60,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Create AWS credentials directory
+        run: mkdir -p ~/.aws
+
+      - name: Configure AWS credentials
+        run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
+
       - uses: ruby/setup-ruby@v1.172.0 
         with:
           ruby-version: '3.1'
