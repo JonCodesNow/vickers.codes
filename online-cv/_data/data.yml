@@ -81,13 +81,13 @@ certifications:
           credentialurl: 
           credentialname: Google
           details: |
-            Currently studying and working towards my AWS Devops Pro certification. I have been using CloudGuru in aiding in this endevor and feel prepared to pass the exam.
+            Currently studying and working towards my AWS Devops Pro certification. I have been using CloudGuru in aiding in this endeavor and feel prepared to pass the exam.
        
         
 projects:
     title: Projects
     intro: >
-      I have been applying information I have been learning in the CloudGuru course I have been taking. Expanding my critical thinking skills has played a major part in how I approach projects and problems that I encounter. I use the vast amount of resources that I have at my disposal to provide solutions or a game plan on how to tackle a current project. As of now, choosing a next project for myself I factor in a plethora of detials. These details mostly include how much overall will this expand upon my current understanding. When working on a project I focus on details, specfically on the function of key elements of the project. Deploying this static website is an great example of that. Using what I learned about the process of the installation and exectution of Jekyll has been extremely helpful.
+      I have been applying information I have been learning in the CloudGuru course I have been taking. Expanding my critical thinking skills has played a major part in how I approach projects and problems that I encounter. I use the vast amount of resources that I have at my disposal to provide solutions or a game plan on how to tackle a current project. As of now, choosing a next project for myself I factor in a plethora of details. These details mostly include how much overall will this expand upon my current understanding. When working on a project I focus on details, specfically on the function of key elements of the project. Deploying this static website is an great example of that. Using what I learned about the process of the installation and exectution of Jekyll has been extremely helpful.
     assignments:
       - title: Dotfiles
         link: "https://github.com/JonCodesNow/dotfiles"
