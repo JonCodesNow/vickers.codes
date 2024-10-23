@@ -10,3 +10,4 @@ terraform.tfstate
 .terraform.lock.hcl
 .DS_Store
 terraform/bucket.json
+#just testing the pipeline to see what I need to fix on my workfile
