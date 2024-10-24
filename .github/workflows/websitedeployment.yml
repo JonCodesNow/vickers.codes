@@ -39,6 +39,7 @@ jobs:
       - name: Remove S3 Bucket from Terraform State
         run: |
           cd $GITHUB_WORKSPACE/terraform
+          terraform init -reconfigure
           terraform state rm aws_s3_bucket.my_bucket
       
       - name: Apply Terraform to Recreate S3 Bucket
