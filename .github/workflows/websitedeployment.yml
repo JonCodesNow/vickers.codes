@@ -94,7 +94,12 @@ jobs:
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      # Apply the rest of the Terraform state (including CloudFront)
+      - name: Initialize Terraform Backend
+        run: |
+          cd $GITHUB_WORKSPACE/terraform
+          terraform init -reconfigure
+          
+        # Apply the rest of the Terraform state (including CloudFront)
       - name: Apply Remaining Terraform Resources
         run: |
           cd $GITHUB_WORKSPACE/terraform
