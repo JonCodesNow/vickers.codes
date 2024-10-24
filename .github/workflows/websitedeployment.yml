@@ -41,6 +41,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/terraform
           terraform init -reconfigure
+          terraform plan
           terraform apply -target=aws_s3_bucket.my_bucket -auto-approve
 
   # Step 2: Sync files to the S3 bucket
