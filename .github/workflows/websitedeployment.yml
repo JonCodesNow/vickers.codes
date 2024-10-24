@@ -40,12 +40,12 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/terraform
           terraform init -reconfigure
-          terraform state rm aws_s3_bucket.my_bucket
+          terraform state rm aws_s3_bucket.s3_bucket
       
       - name: Apply Terraform to Recreate S3 Bucket
         run: |
           cd $GITHUB_WORKSPACE/terraform
-          terraform apply -target=aws_s3_bucket.my_bucket -auto-approve
+          terraform apply -target=aws_s3_bucket.s3_bucket -auto-approve
       
 
   # Step 2: Sync files to the S3 bucket
