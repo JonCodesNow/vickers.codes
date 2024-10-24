@@ -8,7 +8,7 @@ resource "aws_cloudfront_origin_access_control" "vickers_codes" {
 resource "aws_cloudfront_distribution" "www_s3_distribution" {
   origin {
     domain_name = "vickers.codes.s3.amazonaws.com"
-    origin_id   = "S3-www.${var.bucket_name}" 
+    origin_id   = "S3-www.${var.bucket_name}"
     origin_access_control_id = aws_cloudfront_origin_access_control.vickers_codes.id
   }
 
@@ -55,4 +55,11 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
     acm_certificate_arn    = aws_acm_certificate.ssl_certificate.arn
     ssl_support_method     = "sni-only"
   }
+
+  # Ensure CloudFront waits for the S3 bucket and its website configuration
+  depends_on = [
+    aws_s3_bucket.s3_bucket,                 # Ensure S3 bucket is created first
+    aws_s3_bucket_website_configuration.vickers_codes,  # Ensure website configuration is ready
+    aws_s3_bucket_policy.s3_policy           # Ensure the bucket policy is in place
+  ]
 }
