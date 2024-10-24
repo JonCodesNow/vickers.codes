@@ -47,7 +47,14 @@ jobs:
           cd $GITHUB_WORKSPACE/terraform
           terraform apply -target=aws_s3_bucket.s3_bucket -auto-approve
       
-
+      - name: Attach S3 Bucket Policies and Configurations
+        run: |
+          cd $GITHUB_WORKSPACE/terraform
+           terraform apply -target=aws_s3_bucket_policy.s3_policy \
+                        -target=aws_s3_bucket_ownership_controls.example \
+                        -target=aws_s3_bucket_acl.s3_bucket_acl \
+                        -target=aws_s3_bucket_website_configuration.vickers_codes -auto-approve
+    
   # Step 2: Sync files to the S3 bucket
   sync_site_files:
     needs: terraform_create_s3
