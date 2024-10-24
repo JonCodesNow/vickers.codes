@@ -68,11 +68,17 @@ jobs:
 
       - name: Generate Site files
         run: |
-          cd $GITHUB_WORKSPACE/online-cv
-          bundle exec jekyll build 
+            cd $GITHUB_WORKSPACE/online-cv
+            bundle exec jekyll build 
 
+      - name: List Site Files
+        run: ls -R online-cv/_site
+    
+      - name: Check AWS CLI Version
+        run: aws --version
+    
       - name: Sync _site files to S3 bucket
-        run: aws s3 sync online-cv/_site s3://vickers.codes --recursive --region us-east-1
+        run: aws s3 sync online-cv/_site s3://vickers.codes --region us-east-1
 
   # Step 3: Apply the rest of the Terraform state (CloudFront distribution, etc.)
   terraform_apply_rest:
