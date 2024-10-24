@@ -40,7 +40,7 @@ jobs:
       - name: Apply Terraform for S3 Bucket
         run: |
           cd $GITHUB_WORKSPACE/terraform
-          terraform init
+          terraform init -reconfigure
           terraform apply -target=aws_s3_bucket.my_bucket -auto-approve
 
   # Step 2: Sync files to the S3 bucket
@@ -98,7 +98,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/terraform
           terraform init -reconfigure
-          
+
         # Apply the rest of the Terraform state (including CloudFront)
       - name: Apply Remaining Terraform Resources
         run: |
