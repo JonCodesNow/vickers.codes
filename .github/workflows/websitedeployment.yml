@@ -36,13 +36,16 @@ jobs:
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      # Apply Terraform to create only the S3 bucket
-      - name: Apply Terraform for S3 Bucket
+      - name: Remove S3 Bucket from Terraform State
         run: |
           cd $GITHUB_WORKSPACE/terraform
-          terraform init -reconfigure
-          terraform plan
+          terraform state rm aws_s3_bucket.my_bucket
+      
+      - name: Apply Terraform to Recreate S3 Bucket
+        run: |
+          cd $GITHUB_WORKSPACE/terraform
           terraform apply -target=aws_s3_bucket.my_bucket -auto-approve
+      
 
   # Step 2: Sync files to the S3 bucket
   sync_site_files:
