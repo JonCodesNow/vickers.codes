@@ -9,9 +9,9 @@ on:
       - synchronize
 
 jobs:
-  terraform_and_aws_setup:
+  # Step 1: Apply Terraform to create the S3 bucket only
+  terraform_create_s3:
     runs-on: ubuntu-latest
-
     steps:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -20,7 +20,7 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v2
-      
+
       - name: Curl AWS CLI
         run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
@@ -30,34 +30,22 @@ jobs:
       - name: Install AWS CLI
         run: ./aws/install -i ~/my-aws-cli
 
-
-  terraform_apply:
-    needs: terraform_and_aws_setup
-    runs-on: ubuntu-latest
-    steps:
-      
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-      
       - name: Create AWS credentials directory
         run: mkdir -p ~/.aws
 
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      - name: Terraform Plan
+      # Apply Terraform to create only the S3 bucket
+      - name: Apply Terraform for S3 Bucket
         run: |
           cd $GITHUB_WORKSPACE/terraform
           terraform init
-          terraform plan -out=tfplan
+          terraform apply -target=aws_s3_bucket.my_bucket -auto-approve
 
-      - name: Apply Terraform changes 
-        run: |
-          cd $GITHUB_WORKSPACE/terraform
-          terraform apply tfplan
-
-  site_deployment:
-    needs: [terraform_apply, terraform_and_aws_setup]
+  # Step 2: Sync files to the S3 bucket
+  sync_site_files:
+    needs: terraform_create_s3
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -72,7 +60,7 @@ jobs:
       - uses: ruby/setup-ruby@v1.172.0 
         with:
           ruby-version: '3.1'
-      
+
       - name: Install Bundler
         run: | 
           cd $GITHUB_WORKSPACE/online-cv
@@ -83,6 +71,25 @@ jobs:
           cd $GITHUB_WORKSPACE/online-cv
           bundle exec jekyll build 
 
-      - name: Move _site files to s3 bucket
-        run: aws s3 cp online-cv/_site s3://vickers.codes --recursive --region us-east-1
+      - name: Sync _site files to S3 bucket
+        run: aws s3 sync online-cv/_site s3://vickers.codes --recursive --region us-east-1
 
+  # Step 3: Apply the rest of the Terraform state (CloudFront distribution, etc.)
+  terraform_apply_rest:
+    needs: sync_site_files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Create AWS credentials directory
+        run: mkdir -p ~/.aws
+
+      - name: Configure AWS credentials
+        run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
+
+      # Apply the rest of the Terraform state (including CloudFront)
+      - name: Apply Remaining Terraform Resources
+        run: |
+          cd $GITHUB_WORKSPACE/terraform
+          terraform apply -auto-approve
