@@ -9,8 +9,8 @@ on:
       - synchronize
 
 jobs:
-  # Step 1: Apply Terraform to create the S3 bucket only
-  terraform_create_s3:
+  # Step 1: Apply Terraform to create the S3 bucket and related resources
+  terraform_create_s3_and_policies:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Terraform
@@ -36,28 +36,19 @@ jobs:
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      - name: Remove S3 Bucket from Terraform State
+      # Apply Terraform to create S3 bucket and all associated resources
+      - name: Apply Terraform for S3 Bucket and Policies
         run: |
           cd $GITHUB_WORKSPACE/terraform
           terraform init -reconfigure
-          terraform state rm aws_s3_bucket.s3_bucket
-      
-      - name: Apply Terraform to Recreate S3 Bucket
-        run: |
-          cd $GITHUB_WORKSPACE/terraform
-          terraform apply -target=aws_s3_bucket.s3_bucket -auto-approve
-      
-      - name: Attach S3 Bucket Policies and Configurations
-        run: |
-          cd $GITHUB_WORKSPACE/terraform
-           terraform apply -target=aws_s3_bucket_policy.s3_policy \
-                        -target=aws_s3_bucket_ownership_controls.example \
-                        -target=aws_s3_bucket_acl.s3_bucket_acl \
-                        -target=aws_s3_bucket_website_configuration.vickers_codes -auto-approve
-    
+          terraform apply -target=aws_s3_bucket.s3_bucket \
+                          -target=aws_s3_bucket_policy.s3_policy \
+                          -target=aws_s3_bucket_acl.s3_bucket_acl \
+                          -target=aws_s3_bucket_website_configuration.vickers_codes -auto-approve
+
   # Step 2: Sync files to the S3 bucket
   sync_site_files:
-    needs: terraform_create_s3
+    needs: terraform_create_s3_and_policies
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -80,15 +71,12 @@ jobs:
 
       - name: Generate Site files
         run: |
-            cd $GITHUB_WORKSPACE/online-cv
-            bundle exec jekyll build 
+          cd $GITHUB_WORKSPACE/online-cv
+          bundle exec jekyll build 
 
       - name: List Site Files
         run: ls -R online-cv/_site
-    
-      - name: Check AWS CLI Version
-        run: aws --version
-    
+
       - name: Sync _site files to S3 bucket
         run: aws s3 sync online-cv/_site s3://vickers.codes --region us-east-1
 
@@ -106,12 +94,13 @@ jobs:
       - name: Configure AWS credentials
         run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
+      # Initialize Terraform Backend
       - name: Initialize Terraform Backend
         run: |
           cd $GITHUB_WORKSPACE/terraform
           terraform init -reconfigure
 
-        # Apply the rest of the Terraform state (including CloudFront)
+      # Apply the rest of the Terraform state (including CloudFront)
       - name: Apply Remaining Terraform Resources
         run: |
           cd $GITHUB_WORKSPACE/terraform
