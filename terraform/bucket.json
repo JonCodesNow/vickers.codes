@@ -1,0 +1,37 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "cloudfront.amazonaws.com"
+        },
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::vickers.codes/*",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceArn": "arn:aws:cloudfront::{{AWS_ACCOUNT_ID}}:distribution/E2RLX8ELOZFXHR"
+          }
+        }
+      },
+      {
+        "Sid": "AllowCICDPipelineAccess",
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "arn:aws:iam::{{AWS_ACCOUNT_ID}}:user/JonathanVickers"
+        },
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::vickers.codes",
+          "arn:aws:s3:::vickers.codes/*"
+        ]
+      }
+    ]
+  }
+  
+  
