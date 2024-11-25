@@ -5,7 +5,7 @@ on:
     branches:
       - '*'
     types:
-      - opened      
+      - opened
       - synchronize
 
 jobs:
@@ -13,42 +13,42 @@ jobs:
   terraform_create_s3_and_policies:
     runs-on: ubuntu-latest
     steps:
+      # Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.5.0
 
+      # Checkout the repository to ensure all files are available
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Debug: List files to verify bucket-policy.json presence
+      # Debug: List files to verify that bucket.json is present
       - name: List repository files
         run: ls -R
 
-      # Check if bucket-policy.json exists
-      - name: Check if bucket-policy.json exists
+      # Check if bucket.json exists in the correct directory
+      - name: Check if bucket.json exists
         run: |
-          if [ ! -f "terraform/bucket-policy.json" ]; then
-            echo "Error: bucket-policy.json not found!"
+          if [ ! -f "terraform/bucket.json" ]; then
+            echo "Error: bucket.json not found!"
             exit 1
           fi
 
-      - name: Curl AWS CLI
-        run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-
-      - name: Unzip AWS CLI
-        run: unzip awscliv2.zip
-
+      # Install AWS CLI to interact with AWS resources if needed
       - name: Install AWS CLI
-        run: ./aws/install -i ~/my-aws-cli
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          ./aws/install -i ~/my-aws-cli
 
-      - name: Create AWS credentials directory
-        run: mkdir -p ~/.aws
-
+      # Configure AWS credentials from GitHub Secrets
       - name: Configure AWS credentials
-        run: echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
+        run: |
+          mkdir -p ~/.aws
+          echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-      # Apply Terraform to create S3 bucket and all associated resources
+      # Run Terraform to apply the S3 bucket and bucket policy using bucket.json
       - name: Apply Terraform for S3 Bucket and Policies
         run: |
           cd $GITHUB_WORKSPACE/terraform
@@ -57,6 +57,7 @@ jobs:
                           -target=aws_s3_bucket_policy.s3_policy \
                           -target=aws_s3_bucket_acl.s3_bucket_acl \
                           -target=aws_s3_bucket_website_configuration.vickers_codes -auto-approve
+
 
 
   # Step 2: Sync files to the S3 bucket
