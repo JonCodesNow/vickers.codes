@@ -9,8 +9,9 @@ resource "aws_s3_bucket" "s3_bucket" {
 
 resource "aws_s3_bucket_policy" "s3_policy" {
   bucket = aws_s3_bucket.s3_bucket.id
-  policy  = file("bucket.json")
+  policy = file("${path.module}/bucket.json")
 }
+
 
 resource "aws_s3_bucket_ownership_controls" "example" {
   bucket = aws_s3_bucket.s3_bucket.id
