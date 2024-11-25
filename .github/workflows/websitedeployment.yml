@@ -21,6 +21,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      # Debug: List files to verify bucket-policy.json presence
+      - name: List repository files
+        run: ls -R
+
+      # Check if bucket-policy.json exists
+      - name: Check if bucket-policy.json exists
+        run: |
+          if [ ! -f "terraform/bucket-policy.json" ]; then
+            echo "Error: bucket-policy.json not found!"
+            exit 1
+          fi
+
       - name: Curl AWS CLI
         run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
@@ -45,6 +57,7 @@ jobs:
                           -target=aws_s3_bucket_policy.s3_policy \
                           -target=aws_s3_bucket_acl.s3_bucket_acl \
                           -target=aws_s3_bucket_website_configuration.vickers_codes -auto-approve
+
 
   # Step 2: Sync files to the S3 bucket
   sync_site_files:
