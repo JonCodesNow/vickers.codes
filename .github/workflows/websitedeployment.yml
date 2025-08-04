@@ -85,6 +85,9 @@ jobs:
       - name: Sync _site files to S3 bucket
         run: aws s3 sync online-cv/_site s3://vickers.codes --region us-east-1
 
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id E1IL2QS3Q95ACA --paths "/*"
+
   # Step 3: Apply the rest of the Terraform state (CloudFront distribution, etc.)
   terraform_apply_rest:
     needs: sync_site_files
