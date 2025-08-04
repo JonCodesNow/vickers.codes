@@ -27,14 +27,6 @@ jobs:
       - name: List repository files
         run: ls -R
 
-      # Check if bucket.json exists in the correct directory
-      - name: Check if bucket.json exists
-        run: |
-          if [ ! -f "terraform/bucket.json" ]; then
-            echo "Error: bucket.json not found!"
-            exit 1
-          fi
-
       # Configure AWS credentials from GitHub Secrets
       - name: Configure AWS credentials
         run: |
