@@ -60,6 +60,6 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
   depends_on = [
     aws_s3_bucket.s3_bucket,                 # Ensure S3 bucket is created first
     aws_s3_bucket_website_configuration.vickers_codes,  # Ensure website configuration is ready
-    aws_s3_bucket_policy.s3_policy           # Ensure the bucket policy is in place
+
   ]
 }
