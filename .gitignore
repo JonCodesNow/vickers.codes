@@ -9,4 +9,5 @@ terraform.tfstate
 .terraform.tfstate.lock.info
 .terraform.lock.hcl
 .DS_Store
-terraform/bucket.json
+
+
